@@ -116,7 +116,7 @@ app.post("/broadcast/:roomID/:userID", async (req, res) => {
 });
 
 function handleTrackEvent(e, peer, roomID) {
-  // recordAudio.beforeOffer(peer)
+  recordAudio.beforeOffer(peer)
   senderStream[roomID] = e.streams[0];
 }
 
