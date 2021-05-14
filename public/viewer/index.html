@@ -3,13 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Broadcast record audio</title>
+    <title>Viewer record audio</title>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-    <script src="index.js"></script>
   </head>
   <body>
-    <button id="my-button">Start Stream</button>
-    <audio autoplay controls id="audio"></audio>
+    <h1>Viewer</h1>
+    <audio controls autoplay id="audio"></audio>
+    <button id="my-button">View Stream</button>
     <script>
       window.onbeforeunload = async function () {
         await axios.post(
@@ -18,8 +19,8 @@
             "/" +
             urlParams.get("user_id")
         );
-        return false;
       };
     </script>
+    <script src="viewer.js"></script>
   </body>
 </html>

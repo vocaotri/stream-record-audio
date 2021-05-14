@@ -1,5 +1,14 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
+var socket = io();
+
+// join room 
+socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true });
+// check user disconnect
+socket.on("user-disconnect", (data) => {
+  console.log(data);
+})
+
 const resolution = {
   QQVGA: {
     width: { ideal: 160 },

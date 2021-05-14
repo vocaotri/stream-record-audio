@@ -1,5 +1,15 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
+var socket = io();
+
+// join room 
+socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id") });
+// check user disconnect
+socket.on("user-disconnect", (data) => {
+  if (data.is_host === true) {
+    alert('host has left room')
+  }
+})
 // init();
 window.onload = () => {
   document.getElementById("my-button").onclick = () => {
