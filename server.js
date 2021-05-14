@@ -16,6 +16,8 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // this is where we'll handle our various routes from
 require("./routes/routes.js")(app, webrtc, senderStream, peerUser);
+// import class bot
+const BotRecord = require("./bot/bot-record");
 
 app.post('/upload', (req, res) => {
     fs.writeFileSync(uuidv4() + '.mp3', Buffer.from(req.body.blob.replace('data:audio/mp3;base64,', ''), 'base64'));
@@ -23,11 +25,16 @@ app.post('/upload', (req, res) => {
 })
 
 io.on("connection", function(socket) {
+    const bot = new BotRecord();
     socket.on("join-room", (data) => {
         joinUser(socket.id, data.user_id, data.room_id, data.is_host)
         socket.join(data.room_id);
         io.to(data.room_id).emit("user-reconnect", data)
-            // console.log('User id :' + data.user_id + ' has join room');
+        if (data.is_host) {
+            bot.setRoomid(data.room_id)
+            bot.openUrl()
+        }
+        // console.log('User id :' + data.user_id + ' has join room');
     });
     // start stream
     socket.on("start-stream", data => {
@@ -36,7 +43,9 @@ io.on("connection", function(socket) {
     socket.on("disconnect", () => {
         const user = removeUser(socket.id);
         if (user) {
-            // console.log('User id :' + user.user_id + ' has left room');
+            if (user.is_host)
+                bot.closeBrower()
+                // console.log('User id :' + user.user_id + ' has left room');
             io.to(user.room_id).emit("user-disconnect", user)
         }
     });

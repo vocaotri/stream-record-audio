@@ -85,7 +85,10 @@ function download() {
         var base64data = reader.result;
         axios.post(
             "/upload", { blob: base64data }
-        );
+        ).then(res => {
+            if (res.status === 201)
+                alert('send data success');
+        });
     }
 }
 // check user disconnect
