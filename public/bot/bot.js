@@ -7,7 +7,15 @@ socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams
 // check user disconnect
 socket.on("user-disconnect", (data) => {
   if (data.is_host === true) {
-    alert('host has left room')
+    // alert('host has left room')
+  }
+})
+// check user disconnect
+socket.on("user-reconnect", (data) => {
+  if (data.is_host === true) {
+    setTimeout(function () {
+      init()
+    }, 1500)
   }
 })
 // init();

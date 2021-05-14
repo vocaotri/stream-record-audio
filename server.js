@@ -20,6 +20,7 @@ io.on("connection", function (socket) {
   socket.on("join-room", (data) => {
     joinUser(socket.id, data.user_id, data.room_id, data.is_host)
     socket.join(data.room_id);
+    io.to(data.room_id).emit("user-reconnect", data)
     // console.log('User id :' + data.user_id + ' has join room');
   });
   socket.on("disconnect", () => {

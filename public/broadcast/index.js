@@ -1,9 +1,6 @@
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 var socket = io();
-
-// join room 
-socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true });
 // check user disconnect
 socket.on("user-disconnect", (data) => {
   console.log(data);
@@ -111,6 +108,8 @@ async function handleNegotiationNeededEvent(peer) {
     "/broadcast/" + urlParams.get("room_id") + "/" + urlParams.get("user_id"),
     payload
   );
+  // join room 
+  socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true });
   const desc = new RTCSessionDescription(data.sdp);
   peer.setRemoteDescription(desc).catch((e) => console.log(e));
 }
