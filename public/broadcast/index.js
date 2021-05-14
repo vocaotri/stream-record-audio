@@ -3,113 +3,120 @@ const urlParams = new URLSearchParams(queryString);
 var socket = io();
 // check user disconnect
 socket.on("user-disconnect", (data) => {
-  console.log(data);
+        // console.log(data);
+    })
+    // join room 
+socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true });
+// check user disconnect
+socket.on("user-reconnect", (data) => {
+    if (data.user_id === 0) {
+        document.getElementById('my-button').removeAttribute('disabled');
+    }
 })
 
 const resolution = {
-  QQVGA: {
-    width: { ideal: 160 },
-    height: { ideal: 120 },
-  },
-  QVGA: {
-    width: { ideal: 320 },
-    height: { ideal: 240 },
-  },
-  WQVGA: {
-    width: { ideal: 428 },
-    height: { ideal: 240 },
-  },
-  VGA: {
-    width: { ideal: 640 },
-    height: { ideal: 480 },
-  },
-  FWVGA: {
-    width: { ideal: 854 },
-    height: { ideal: 480 },
-  },
-  SVGA: {
-    width: { ideal: 832 },
-    height: { ideal: 624 },
-  },
-  QHD: {
-    width: { ideal: 960 },
-    height: { ideal: 540 },
-  },
-  HD: {
-    width: { ideal: 1280 },
-    height: { ideal: 720 },
-  },
-  FullHD: {
-    width: { ideal: 1920 },
-    height: { ideal: 1080 },
-  },
-  TwoK: {
-    width: { ideal: 2560 },
-    height: { ideal: 1440 },
-  },
-  FourK: {
-    width: { ideal: 3840 },
-    height: { ideal: 2160 },
-  },
+    QQVGA: {
+        width: { ideal: 160 },
+        height: { ideal: 120 },
+    },
+    QVGA: {
+        width: { ideal: 320 },
+        height: { ideal: 240 },
+    },
+    WQVGA: {
+        width: { ideal: 428 },
+        height: { ideal: 240 },
+    },
+    VGA: {
+        width: { ideal: 640 },
+        height: { ideal: 480 },
+    },
+    FWVGA: {
+        width: { ideal: 854 },
+        height: { ideal: 480 },
+    },
+    SVGA: {
+        width: { ideal: 832 },
+        height: { ideal: 624 },
+    },
+    QHD: {
+        width: { ideal: 960 },
+        height: { ideal: 540 },
+    },
+    HD: {
+        width: { ideal: 1280 },
+        height: { ideal: 720 },
+    },
+    FullHD: {
+        width: { ideal: 1920 },
+        height: { ideal: 1080 },
+    },
+    TwoK: {
+        width: { ideal: 2560 },
+        height: { ideal: 1440 },
+    },
+    FourK: {
+        width: { ideal: 3840 },
+        height: { ideal: 2160 },
+    },
 };
 window.onload = () => {
-  document.getElementById("my-button").onclick = () => {
-    init();
-  };
+    document.getElementById("my-button").onclick = () => {
+        init();
+    };
 };
 var cameraDeviceId = [];
 getCamera();
 async function init() {
-  await getDeviceIdCamera();
-  const stream = await getCamera({
-    deviceId: {
-      exact: cameraDeviceId[0].diviceId,
-    },
-  });
-  document.getElementById("audio").srcObject = stream;
-  const peer = createPeer();
-  stream.getTracks().forEach((track) => peer.addTrack(track, stream));
+    await getDeviceIdCamera();
+    const stream = await getCamera({
+        deviceId: {
+            exact: cameraDeviceId[0].diviceId,
+        },
+    });
+    document.getElementById("audio").srcObject = stream;
+    const peer = createPeer();
+    stream.getTracks().forEach((track) => peer.addTrack(track, stream));
 }
 async function getCamera(device = true) {
-  return navigator.mediaDevices.getUserMedia({
-    video: false,
-    audio: true,
-  });
+    return navigator.mediaDevices.getUserMedia({
+        video: false,
+        audio: true,
+    });
 }
 async function getConnectedDevices(kind = "videoinput") {
-  const devices = await navigator.mediaDevices.enumerateDevices();
-  return devices.filter((device) => device.kind === kind);
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    return devices.filter((device) => device.kind === kind);
 }
 
 async function getDeviceIdCamera(key = 0) {
-  let listCamera = await getConnectedDevices();
-  listCamera.forEach((item) => {
-    cameraDeviceId.push({ diviceId: item.deviceId, label: item.label });
-  });
+    let listCamera = await getConnectedDevices();
+    listCamera.forEach((item) => {
+        cameraDeviceId.push({ diviceId: item.deviceId, label: item.label });
+    });
 }
 
 function createPeer() {
-  const peer = new RTCPeerConnection({
-    iceServers: [{ urls: "stun:stun.l.google.com" }],
-  });
-  peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer);
+    const peer = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com" }],
+    });
+    peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer);
 
-  return peer;
+    return peer;
 }
 
 async function handleNegotiationNeededEvent(peer) {
-  const offer = await peer.createOffer();
-  await peer.setLocalDescription(offer);
-  const payload = {
-    sdp: peer.localDescription,
-  };
+    const offer = await peer.createOffer();
+    await peer.setLocalDescription(offer);
+    const payload = {
+        sdp: peer.localDescription,
+    };
 
-  const { data } = await axios.post(
-    "/broadcast/" + urlParams.get("room_id") + "/" + urlParams.get("user_id"),
-    payload
-  );
-  // join room 
-  socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true });
-  const desc = new RTCSessionDescription(data.sdp);
-  peer.setRemoteDescription(desc).catch((e) => console.log(e));
+    const { data } = await axios.post(
+        "/broadcast/" + urlParams.get("room_id") + "/" + urlParams.get("user_id"),
+        payload
+    );
+    socket.emit("start-stream", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true })
+    const desc = new RTCSessionDescription(data.sdp);
+    peer.setRemoteDescription(desc).catch((e) => console.log(e));
 }

@@ -18,23 +18,28 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 require("./routes/routes.js")(app, webrtc, senderStream, peerUser);
 
 app.post('/upload', (req, res) => {
-  fs.writeFileSync(uuidv4() + '.mp3', Buffer.from(req.body.blob.replace('data:audio/mp3;base64,', ''), 'base64'));
+    fs.writeFileSync(uuidv4() + '.mp3', Buffer.from(req.body.blob.replace('data:audio/mp3;base64,', ''), 'base64'));
+    res.status(201).send({ messager: "upload success" })
 })
 
-io.on("connection", function (socket) {
-  socket.on("join-room", (data) => {
-    joinUser(socket.id, data.user_id, data.room_id, data.is_host)
-    socket.join(data.room_id);
-    io.to(data.room_id).emit("user-reconnect", data)
-    // console.log('User id :' + data.user_id + ' has join room');
-  });
-  socket.on("disconnect", () => {
-    const user = removeUser(socket.id);
-    if (user) {
-      // console.log('User id :' + user.user_id + ' has left room');
-      io.to(user.room_id).emit("user-disconnect", user)
-    }
-  });
+io.on("connection", function(socket) {
+    socket.on("join-room", (data) => {
+        joinUser(socket.id, data.user_id, data.room_id, data.is_host)
+        socket.join(data.room_id);
+        io.to(data.room_id).emit("user-reconnect", data)
+            // console.log('User id :' + data.user_id + ' has join room');
+    });
+    // start stream
+    socket.on("start-stream", data => {
+        io.to(data.room_id).emit("listen-stream", data)
+    })
+    socket.on("disconnect", () => {
+        const user = removeUser(socket.id);
+        if (user) {
+            // console.log('User id :' + user.user_id + ' has left room');
+            io.to(user.room_id).emit("user-disconnect", user)
+        }
+    });
 });
 
 http.listen(port, () => console.log("server started : " + port));
