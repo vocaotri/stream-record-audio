@@ -89,7 +89,6 @@ async function getDeviceIdCamera(key = 0) {
   listCamera.forEach((item) => {
     cameraDeviceId.push({ diviceId: item.deviceId, label: item.label });
   });
-  console.log(cameraDeviceId)
 }
 
 function createPeer() {
