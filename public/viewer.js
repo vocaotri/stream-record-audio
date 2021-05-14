@@ -9,9 +9,6 @@ window.onload = () => {
 async function init() {
   const peer = createPeer();
   peer.addTransceiver("audio", { direction: "recvonly" });
-  peer.addEventListener("close", () => {
-    console.log("ok");
-  })
 }
 
 function createPeer() {
