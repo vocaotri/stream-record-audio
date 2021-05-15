@@ -8,11 +8,21 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
     <script src="index.js"></script>
+    <link rel="stylesheet/less" type="text/css" href="broadcats.less" />
 </head>
 
 <body>
-    <button disabled id="my-button">Start Stream</button>
-    <audio autoplay controls id="audio"></audio>
+    <div class="container">
+        <div class="stream-area">
+            <audio autoplay controls id="audio"></audio>
+            <button disabled id="my-button">Start Stream</button>
+        </div>
+        <div class="chat-box">
+            <textarea cols="30" rows="10"></textarea>
+            <button disabled id="chat">Chat now</button>
+        </div>
+    </div>
+    <script src="//cdn.jsdelivr.net/npm/less@3.13"></script>
     <script>
         window.onbeforeunload = async function() {
             await axios.post(

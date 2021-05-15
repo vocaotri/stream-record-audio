@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bot record audio</title>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
-  </head>
-  <body>
+</head>
+
+<body>
     <h1>Bot</h1>
     <audio controls autoplay id="audio"></audio>
-    <button id="my-button">View Stream</button>
+    <button id="my-button">Bot Stream</button>
     <script>
-      window.onbeforeunload = async function () {
-        await axios.post(
-          "/disconnect/" +
-            urlParams.get("room_id") +
-            "/" +
-            urlParams.get("user_id")
-        );
-      };
+        window.onbeforeunload = async function() {
+            await axios.post(
+                "/disconnect/" +
+                urlParams.get("room_id") +
+                "/" +
+                urlParams.get("user_id")
+            );
+        };
     </script>
     <script src="bot.js"></script>
-  </body>
+</body>
+
 </html>

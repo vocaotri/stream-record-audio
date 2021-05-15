@@ -25,7 +25,7 @@ app.post('/upload', (req, res) => {
 })
 
 io.on("connection", function(socket) {
-    const bot = new BotRecord();
+    let bot = new BotRecord();
     socket.on("join-room", (data) => {
         joinUser(socket.id, data.user_id, data.room_id, data.is_host)
         socket.join(data.room_id);
@@ -33,12 +33,22 @@ io.on("connection", function(socket) {
         if (data.is_host) {
             bot.setRoomid(data.room_id)
             bot.openUrl()
+        } else {
+            bot = undefined;
         }
         // console.log('User id :' + data.user_id + ' has join room');
+        socket.on("chat-room", data => {
+            console.log(bot.getRecordTime())
+        });
     });
     // start stream
     socket.on("start-stream", data => {
-        io.to(data.room_id).emit("listen-stream", data)
+            io.to(data.room_id).emit("listen-stream", data)
+            bot.setRecordTime()
+        })
+        // fail record
+    socket.on("fail-record", data => {
+        io.to(data.room_id).emit("listen-fail-stream", data)
     })
     socket.on("disconnect", () => {
         const user = removeUser(socket.id);

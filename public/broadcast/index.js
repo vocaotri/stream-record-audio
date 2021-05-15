@@ -9,8 +9,20 @@ socket.on("user-disconnect", (data) => {
 socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true });
 // check user disconnect
 socket.on("user-reconnect", (data) => {
+        if (data.user_id === 0) {
+            document.getElementById('my-button').removeAttribute('disabled');
+        }
+    })
+    // check start stream
+socket.on("listen-stream", (data) => {
+        document.getElementById('chat').removeAttribute('disabled');
+        document.getElementById('my-button').setAttribute('disabled', true);
+    })
+    // check record fail
+socket.on("listen-fail-stream", (data) => {
     if (data.user_id === 0) {
-        document.getElementById('my-button').removeAttribute('disabled');
+        alert('record audio has error try again, check connection your internet')
+        window.location.reload()
     }
 })
 
@@ -64,6 +76,10 @@ window.onload = () => {
     document.getElementById("my-button").onclick = () => {
         init();
     };
+    var btnChat = document.getElementById('chat');
+    btnChat.onclick = () => {
+        socket.emit("chat-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true })
+    }
 };
 var cameraDeviceId = [];
 getCamera();

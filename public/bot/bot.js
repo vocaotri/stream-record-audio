@@ -18,7 +18,7 @@ socket.on("listen-stream", (data) => {
         if (data.is_host === true) {
             setTimeout(function() {
                 init()
-            }, 2000)
+            }, 500)
         }
     })
     // init();
@@ -62,13 +62,17 @@ recordedChunks = [];
 
 function handleTrackEvent(e) {
     document.getElementById("audio").srcObject = e.streams[0];
-    window.recording = new MediaRecorder(e.streams[0]);
+    try {
+        window.recording = new MediaRecorder(e.streams[0]);
+    } catch (err) {
+        socket.emit("fail-record", { user_id: 0, room_id: urlParams.get("room_id") });
+    }
     recording.ondataavailable = (event) => {
         if (event.data.size > 0) {
             recordedChunks.push(event.data);
             download();
         } else {
-            // ...
+            //....
         }
     };
     recording.start();

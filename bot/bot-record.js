@@ -10,7 +10,19 @@ module.exports = class BotRecord {
         this.page = await this.browser.newPage();
         await this.page.goto(url);
     }
+    setRecordTime() {
+        this.recordTime = 0;
+        var _this = this;
+        this.interVTime = setInterval(function() {
+            _this.recordTime++;
+        }, 1000)
+    }
+    getRecordTime() {
+        return this.recordTime;
+    }
     async closeBrower() {
+        clearInterval(this.interVTime);
+        this.interVTime = 0;
         this.page.on('dialog', async dialog => {
             if (dialog.message() === "send data success") {
                 await this.browser.close()

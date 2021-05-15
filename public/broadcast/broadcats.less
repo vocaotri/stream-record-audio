@@ -1,0 +1,38 @@
+button:disabled,
+button[disabled]{
+    background-color: #ccade8;
+    pointer-events:none;
+}
+button:hover{
+    background-color:#6e4294
+}
+button{
+    border: none;
+    border-radius: 4px;
+    background-color: #9763c5;
+    padding: 7px;
+    cursor: pointer;
+    color: white;
+}
+.container {
+    display: flex;
+
+    .stream-area {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        #my-button {
+            margin: auto;
+            width: 200px;
+        }
+    }
+    .chat-box{
+        position: relative;
+        #chat{
+            position: absolute;
+            top: 40%;
+            padding: 7px;
+            margin-left: 5px;
+        }
+    }
+}
