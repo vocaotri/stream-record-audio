@@ -11,7 +11,7 @@
     <h1>Viewer</h1>
     <audio controls autoplay id="audio"></audio>
     <button id="my-button">View Stream</button>
-    <script>
+    <!-- <script>
       window.onbeforeunload = async function () {
         await axios.post(
           "/disconnect/" +
@@ -20,7 +20,7 @@
             urlParams.get("user_id")
         );
       };
-    </script>
+    </script> -->
     <script src="viewer.js"></script>
   </body>
 </html>

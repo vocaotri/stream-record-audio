@@ -3,10 +3,9 @@ const app = express();
 var http = require("http").createServer(app);
 var io = require("socket.io")(http);
 const webrtc = require("wrtc");
-const { v4: uuidv4 } = require('uuid');
 fs = require("fs");
 require("dotenv").config();
-const { joinUser, removeUser, findUser } = require('./common/users');
+const { joinUser, removeUser } = require('./common/users');
 var port = process.env.PORT || 3000;
 let senderStream = [];
 let peerUser = [];
@@ -18,13 +17,10 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 require("./routes/routes.js")(app, webrtc, senderStream, peerUser);
 // import class bot
 const BotRecord = require("./bot/bot-record");
+// import disconnect socket
+const dcn = require("./common/disconnect");
 
-app.post('/upload', (req, res) => {
-    fs.writeFileSync(uuidv4() + '.mp3', Buffer.from(req.body.blob.replace('data:audio/mp3;base64,', ''), 'base64'));
-    res.status(201).send({ messager: "upload success" })
-})
-
-io.on("connection", function(socket) {
+io.on("connection", function (socket) {
     let bot = new BotRecord();
     socket.on("join-room", (data) => {
         joinUser(socket.id, data.user_id, data.room_id, data.is_host)
@@ -43,10 +39,10 @@ io.on("connection", function(socket) {
     });
     // start stream
     socket.on("start-stream", data => {
-            io.to(data.room_id).emit("listen-stream", data)
-            bot.setRecordTime()
-        })
-        // fail record
+        io.to(data.room_id).emit("listen-stream", data)
+        bot.setRecordTime()
+    })
+    // fail record
     socket.on("fail-record", data => {
         io.to(data.room_id).emit("listen-fail-stream", data)
     })
@@ -55,10 +51,12 @@ io.on("connection", function(socket) {
         if (user) {
             if (user.is_host)
                 bot.closeBrower()
-                // console.log('User id :' + user.user_id + ' has left room');
+            peerUser = dcn.userDisconnect(user, peerUser)
+            // console.log('User id :' + user.user_id + ' has left room');
             io.to(user.room_id).emit("user-disconnect", user)
         }
     });
 });
+
 
 http.listen(port, () => console.log("server started : " + port));

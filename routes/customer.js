@@ -4,8 +4,8 @@ const customerRoutes = (app, webrtc, senderStream, peerUser) => {
             return res.status(401).json({ error: "no room id" });
         if (req.params.userID === "null")
             return res.status(401).json({ error: "no user id" });
-        var roomID = parseInt(req.params.roomID);
-        var userID = parseInt(req.params.userID);
+        var roomID = req.params.roomID;
+        var userID = req.params.userID;
         if (typeof senderStream[roomID] === "undefined")
             return res.status(401).json({ error: "sender not found" });
         if (peerUser[userID]) await peerUser[userID].close();

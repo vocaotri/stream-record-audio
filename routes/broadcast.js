@@ -5,8 +5,8 @@ const broadcastRoutes = (app, webrtc, senderStream, peerUser) => {
         if (req.params.userID === "null")
             return res.status(401).json({ error: "no user id" });
         if (peerUser[userID]) return res.json({ error: "user already exist" });
-        var roomID = parseInt(req.params.roomID);
-        var userID = parseInt(req.params.userID);
+        var roomID = req.params.roomID;
+        var userID = req.params.userID;
         peerUser[userID] = new webrtc.RTCPeerConnection({
             iceServers: [
                 {

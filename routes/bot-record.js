@@ -4,7 +4,7 @@ const botRoutes = (app, webrtc, senderStream, peerUser) => {
             return res.status(401).json({ error: "no room id" });
         if (req.params.userID === "null")
             return res.status(401).json({ error: "no user id" });
-        var roomID = parseInt(req.params.roomID);
+        var roomID = req.params.roomID;
         var userID = 0;
         if (typeof senderStream[roomID] === "undefined")
             return res.status(401).json({ error: "sender not found" });

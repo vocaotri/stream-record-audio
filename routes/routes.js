@@ -1,7 +1,8 @@
 const customerRoutes = require("./customer");
 const broadcastRoutes = require("./broadcast");
-const disconnecttRoutes = require("./disconnect");
+// const disconnecttRoutes = require("./disconnect");
 const botRoutes = require("./bot-record");
+const uploadRoutes = require("./upload");
 const appRouter = (app, webrtc, senderStream, peerUser) => {
     app.use(function (req, res, next) {
         const allowedOrigins = [
@@ -39,8 +40,9 @@ const appRouter = (app, webrtc, senderStream, peerUser) => {
     });
     customerRoutes(app, webrtc, senderStream, peerUser);
     broadcastRoutes(app, webrtc, senderStream, peerUser);
-    disconnecttRoutes(app, webrtc, senderStream, peerUser);
-    botRoutes(app, webrtc, senderStream, peerUser)
+    // disconnecttRoutes(app, webrtc, senderStream, peerUser);
+    botRoutes(app, webrtc, senderStream, peerUser);
+    uploadRoutes(app);
 };
 
 module.exports = appRouter;

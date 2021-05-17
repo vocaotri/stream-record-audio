@@ -3,75 +3,28 @@ const urlParams = new URLSearchParams(queryString);
 var socket = io();
 // check user disconnect
 socket.on("user-disconnect", (data) => {
-        // console.log(data);
-    })
-    // join room 
+    // console.log(data);
+})
+// join room 
 socket.emit("join-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true });
 // check user disconnect
 socket.on("user-reconnect", (data) => {
-        if (data.user_id === 0) {
-            document.getElementById('my-button').removeAttribute('disabled');
-        }
-    })
-    // check start stream
+    if (data.user_id === 0) {
+        document.getElementById('my-button').removeAttribute('disabled');
+    }
+})
+// check start stream
 socket.on("listen-stream", (data) => {
-        document.getElementById('chat').removeAttribute('disabled');
-        document.getElementById('my-button').setAttribute('disabled', true);
-    })
-    // check record fail
+    document.getElementById('chat').removeAttribute('disabled');
+    document.getElementById('my-button').setAttribute('disabled', true);
+})
+// check record fail
 socket.on("listen-fail-stream", (data) => {
     if (data.user_id === 0) {
         alert('record audio has error try again, check connection your internet')
         window.location.reload()
     }
 })
-
-const resolution = {
-    QQVGA: {
-        width: { ideal: 160 },
-        height: { ideal: 120 },
-    },
-    QVGA: {
-        width: { ideal: 320 },
-        height: { ideal: 240 },
-    },
-    WQVGA: {
-        width: { ideal: 428 },
-        height: { ideal: 240 },
-    },
-    VGA: {
-        width: { ideal: 640 },
-        height: { ideal: 480 },
-    },
-    FWVGA: {
-        width: { ideal: 854 },
-        height: { ideal: 480 },
-    },
-    SVGA: {
-        width: { ideal: 832 },
-        height: { ideal: 624 },
-    },
-    QHD: {
-        width: { ideal: 960 },
-        height: { ideal: 540 },
-    },
-    HD: {
-        width: { ideal: 1280 },
-        height: { ideal: 720 },
-    },
-    FullHD: {
-        width: { ideal: 1920 },
-        height: { ideal: 1080 },
-    },
-    TwoK: {
-        width: { ideal: 2560 },
-        height: { ideal: 1440 },
-    },
-    FourK: {
-        width: { ideal: 3840 },
-        height: { ideal: 2160 },
-    },
-};
 window.onload = () => {
     document.getElementById("my-button").onclick = () => {
         init();
@@ -117,7 +70,6 @@ function createPeer() {
         iceServers: [{ urls: "stun:stun.l.google.com" }],
     });
     peer.onnegotiationneeded = () => handleNegotiationNeededEvent(peer);
-
     return peer;
 }
 
@@ -135,4 +87,7 @@ async function handleNegotiationNeededEvent(peer) {
     socket.emit("start-stream", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true })
     const desc = new RTCSessionDescription(data.sdp);
     peer.setRemoteDescription(desc).catch((e) => console.log(e));
+}
+function handleCloseChannel() {
+    console.log('ok');
 }
