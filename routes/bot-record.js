@@ -20,8 +20,9 @@ const botRoutes = (app, webrtc, senderStream, peerUser) => {
         await peerUser[userID].setRemoteDescription(desc);
         senderStream[roomID]
             .getTracks()
-            .forEach((track) =>
+            .forEach((track) => {
                 peerUser[userID].addTrack(track, senderStream[roomID])
+            }
             );
         const answer = await peerUser[userID].createAnswer();
         await peerUser[userID].setLocalDescription(answer);

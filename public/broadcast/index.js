@@ -14,7 +14,7 @@ socket.on("user-reconnect", (data) => {
     }
 })
 // check start stream
-socket.on("listen-stream", (data) => {
+socket.on("listen-stream", () => {
     document.getElementById('chat').removeAttribute('disabled');
     document.getElementById('my-button').setAttribute('disabled', true);
 })
@@ -25,13 +25,20 @@ socket.on("listen-fail-stream", (data) => {
         window.location.reload()
     }
 })
+// listen chat
+socket.on("listen-chat", (data) => {
+    chatMain = document.getElementsByClassName('chat-main');
+    chatMain[0].insertAdjacentHTML('beforeend', `<p><span class="time-record">${data.record_time}</span> <span class="user_name">User: ${data.user_id}</span> <span class="chat-message">${data.message}</span></p>`)
+    document.getElementById('chat-input').value = ""
+})
 window.onload = () => {
     document.getElementById("my-button").onclick = () => {
         init();
     };
     var btnChat = document.getElementById('chat');
     btnChat.onclick = () => {
-        socket.emit("chat-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true })
+        var content = document.getElementById('chat-input').value;
+        socket.emit("chat-room", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true, message: content })
     }
 };
 var cameraDeviceId = [];
@@ -87,7 +94,4 @@ async function handleNegotiationNeededEvent(peer) {
     socket.emit("start-stream", { user_id: urlParams.get("user_id"), room_id: urlParams.get("room_id"), is_host: true })
     const desc = new RTCSessionDescription(data.sdp);
     peer.setRemoteDescription(desc).catch((e) => console.log(e));
-}
-function handleCloseChannel() {
-    console.log('ok');
 }

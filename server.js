@@ -29,17 +29,16 @@ io.on("connection", function (socket) {
         if (data.is_host) {
             bot.setRoomid(data.room_id)
             bot.openUrl()
-        } else {
-            bot = undefined;
         }
         // console.log('User id :' + data.user_id + ' has join room');
         socket.on("chat-room", data => {
-            console.log(bot.getRecordTime())
+            io.to(data.room_id).emit("listen-chat", { ...data, record_time: bot.getRecordTime() })
         });
     });
     // start stream
     socket.on("start-stream", data => {
-        io.to(data.room_id).emit("listen-stream", data)
+        if (data.is_host)
+            io.to(data.room_id).emit("listen-stream", data)
         bot.setRecordTime()
     })
     // fail record

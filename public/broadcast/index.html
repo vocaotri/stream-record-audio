@@ -18,22 +18,13 @@
             <button disabled id="my-button">Start Stream</button>
         </div>
         <div class="chat-box">
-            <textarea cols="30" rows="10"></textarea>
+            <div class="chat-main">
+            </div>
+            <textarea id="chat-input" cols="30" rows="3"></textarea>
             <button disabled id="chat">Chat now</button>
         </div>
     </div>
     <script src="//cdn.jsdelivr.net/npm/less@3.13"></script>
-    <!-- <script>
-        window.onbeforeunload = async function() {
-            await axios.post(
-                "/disconnect/" +
-                urlParams.get("room_id") +
-                "/" +
-                urlParams.get("user_id")
-            );
-            return false;
-        };
-    </script> -->
 </body>
 
 </html>
