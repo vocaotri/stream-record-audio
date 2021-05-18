@@ -5,10 +5,10 @@ var usersController = {
         const filter = JSON.parse(req.query.filter)
         delete req.query.filter;
         const options = {
-            page: req.query.page ? ? 1,
-            limit: req.query.limit ? ? 10,
+            page: req.query.page ?? 1,
+            limit: req.query.limit ?? 10,
             collation: {
-                locale: req.query.area ? ? 'en',
+                locale: req.query.area ?? 'en',
             },
         }
         userModel.getUser(filter, options, (err, data) => {
