@@ -1,3 +1,4 @@
+var { validationResult } = require('express-validator');
 var userModel = require('../models/user.model');
 var usersController = {
     listUsers(req, res) {
@@ -27,6 +28,15 @@ var usersController = {
         })
     },
     addUser(req, res) {
+        // Validate incoming input
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.status(400).json({
+                errors: errors.array()
+            });
+        }
+        return "sdasd";
         const user = { ...req.body };
         userModel.addUser(user, (err, data) => {
             if (err)
