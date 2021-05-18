@@ -5,10 +5,10 @@ var usersController = {
         const filter = JSON.parse(req.query.filter)
         delete req.query.filter;
         const options = {
-            page: req.query.page ?? 1,
-            limit: req.query.limit ?? 10,
+            page: req.query.page ? ? 1,
+            limit: req.query.limit ? ? 10,
             collation: {
-                locale: req.query.area ?? 'en',
+                locale: req.query.area ? ? 'en',
             },
         }
         userModel.getUser(filter, options, (err, data) => {
@@ -19,7 +19,7 @@ var usersController = {
         })
     },
     user(req, res) {
-        const filter = { ...req.query }
+        const filter = {...req.query }
         userModel.getOneUser(filter, (err, data) => {
             if (err)
                 console.error(err);
@@ -36,8 +36,7 @@ var usersController = {
                 errors: errors.array()
             });
         }
-        return "sdasd";
-        const user = { ...req.body };
+        const user = {...req.body };
         userModel.addUser(user, (err, data) => {
             if (err)
                 console.error(err)
@@ -46,9 +45,9 @@ var usersController = {
         })
     },
     updateUser(req, res) {
-        const filter = { ...req.body.filter }
+        const filter = {...req.body.filter }
         delete req.body.filter;
-        const data = { ...req.body }
+        const data = {...req.body }
         userModel.updateUser(filter, data, (err, data) => {
             if (err)
                 console.error(err)
@@ -57,7 +56,7 @@ var usersController = {
         })
     },
     deleteUser(req, res) {
-        const filter = { ...req.body }
+        const filter = {...req.body }
         userModel.deleteUser(filter, (err, data) => {
             if (err)
                 console.error(err)
