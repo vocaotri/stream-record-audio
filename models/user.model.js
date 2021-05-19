@@ -2,6 +2,8 @@ var mongoose = require('mongoose')
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 var userSchema = new mongoose.Schema({
+    email: String,
+    password: String,
     firstname: String,
     lastname: String,
     city: String,
@@ -28,13 +30,7 @@ module.exports.getOneUser = (filter, cb) => {
 }
 
 module.exports.addUser = (newUser, cb) => {
-    const user = new userModel({
-        firstname: newUser.firstname,
-        lastname: newUser.lastname,
-        city: newUser.city,
-        state: newUser.state,
-        country: newUser.country
-    })
+    const user = new userModel(newUser)
     user.save(cb)
 }
 
